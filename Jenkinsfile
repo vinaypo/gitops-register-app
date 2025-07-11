@@ -25,15 +25,21 @@ pipeline {
             }
         }
         stage("Push the changes to SCM") {
+            environment {
+                GIT_REPOSITORY = "gitops-register-app"
+                GIT_USERNAME = "vinaypo"
+            }
             steps {
-                sh """
-                   git config --global user.name "vinaypo"
-                   git config --global user.email "vapodila@gmail.com"
+                withCredentials([string(credentialsId: 'github', variable: 'github')]) {
+                sh ''' 
+
+                   git config  user.name "vinaypo"
+                   git config  user.email "vapodila@gmail.com"
                    git add deployment.yaml
                    git commit -m "Update deployment manifest with image tag ${IMAGE_TAG}"
-                """
-                withCredentials([string(credentialsId: 'github', variable: 'github')]) {
-                sh "git push https://github.com/vinaypo/gitops-register-app main"
+                   git push https://${github}@github.com/${GIT_USERNAME}/${GIT_REPOSITORY} HEAD:main
+                '''
+
                 }
               }
             }
