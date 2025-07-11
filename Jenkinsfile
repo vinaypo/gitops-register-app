@@ -13,7 +13,7 @@ pipeline {
         steps {
           sh 'echo passed'
           git branch: 'main', url: 'https://github.com/vinaypo/gitops-register-app'
-        }
+        }   
        }
         stage("Update the Deployment Tags") {
             steps {
@@ -31,7 +31,6 @@ pipeline {
                    git config --global user.email "vapodila@gmail.com"
                    git add deployment.yaml
                    git commit -m "Update deployment manifest with image tag ${IMAGE_TAG}"
-                   git push origin main
                 """
                 withCredentials([string(credentialsId: 'github', variable: 'github')]) {
                 sh "git push https://github.com/vinaypo/gitops-register-app main"
